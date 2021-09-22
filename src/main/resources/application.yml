@@ -1,0 +1,8 @@
+server:
+  port: 8085
+line:
+  bot:
+    channelToken: 'QMetcOLoLQzjvBfNBO0jxxHCAzrzhQu4lreovVEfPDUXxrol6m/a/PgAd9oXv9lHYn+r3nq9OgLWhNs6ZAtLhNN/7iRO1kro4hMJ/Drngv8Cb1iQciXM11vTFBPQVL4YyBlY+IilWyKD8FR5aqINqgdB04t89/1O/w1cDnyilFU='
+    channelSecret: '81c6a13588d5c0b4e5719fd7e34da9b9'
+    handler:
+      path: /callback
