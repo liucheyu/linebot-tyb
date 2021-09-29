@@ -70,10 +70,8 @@ public class MessageEventHandler {
         }
 
         if (text.equals("現金") || text.equals("信用卡") || text.equals("電子票證")) {
-            //lineMessagingClient.replyMessage(new ReplyMessage(event.getReplyToken(), new TextMessage("ok")));
         } else {
             lineMessagingClient.replyMessage(new ReplyMessage(event.getReplyToken(), new TextMessage("請先輸入金額")));
-
         }
 
         //System.out.printf("event: %s", event);
