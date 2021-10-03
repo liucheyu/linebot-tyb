@@ -15,6 +15,7 @@ import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.model.message.template.ButtonsTemplate;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
+import idv.liucheyu.tyb.service.MeesageService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
@@ -24,57 +25,35 @@ import java.util.regex.Pattern;
 public class MessageEventHandler {
 
     @Autowired
-    ObjectMapper objectMapper;
+    MeesageService meesageService;
     @Autowired
     LineMessagingClient lineMessagingClient;
 
+    Pattern pricePattern = Pattern.compile("#{1}\\d*\\.?\\d*");
+    Pattern reportPattern = Pattern.compile("#{1}報表");
     Pattern intPattern = Pattern.compile("\\d*");
 
     @EventMapping
     public void textMessage(MessageEvent<TextMessageContent> event) {
         String text = event.getMessage().getText();
-        if (intPattern.matcher(text).matches()) {
-            ObjectNode objectNode = objectMapper.createObjectNode();
-            objectNode = objectNode.put("action", "payMethod");
+        if (pricePattern.matcher(text).matches()) {
+            text = text.replace("#", "");
             lineMessagingClient.replyMessage(new ReplyMessage(event.getReplyToken(),
-                    TemplateMessage.builder()
-                            .altText("記帳方式")
-                            .template(ButtonsTemplate.builder()
-                                    .title("記帳")
-                                    .text("記帳方式")
-                                    .actions(Arrays.asList(
-                                            PostbackAction.builder()
-                                                    .label("現金")
-                                                    .text("現金")
-                                                    .data(objectNode.set("data", objectMapper.createObjectNode()
-                                                            .put("method", "cash")
-                                                            .put("amount", text)).toString())
-                                                    .build(),
-                                            PostbackAction.builder()
-                                                    .label("信用卡")
-                                                    .text("信用卡")
-                                                    .data(objectNode.set("data", objectMapper.createObjectNode()
-                                                            .put("method", "credit")
-                                                            .put("amount", text)).toString())
-                                                    .build(),
-                                            PostbackAction.builder()
-                                                    .label("電子票證")
-                                                    .text("電子票證")
-                                                    .data(objectNode.set("data", objectMapper.createObjectNode()
-                                                            .put("method", "icard")
-                                                            .put("amount", text)).toString())
-                                                    .build()
-                                            )
-                                    ).build()
-                            ).build()));
+                    meesageService.getPayMethodQuetsionMeesage(text)));
+            return;
         }
 
-        if (text.equals("現金") || text.equals("信用卡") || text.equals("電子票證")) {
-        } else {
-            lineMessagingClient.replyMessage(new ReplyMessage(event.getReplyToken(), new TextMessage("請先輸入金額")));
+        if(reportPattern.matcher(text).matches()) {
+            lineMessagingClient.replyMessage(new ReplyMessage(event.getReplyToken(),
+                    new TextMessage("report")));
+            return;
         }
 
-        //System.out.printf("event: %s", event);
+        if((Event)event instanceof PostbackEvent) {
+            return;
+        }
+
+        lineMessagingClient.replyMessage(new ReplyMessage(event.getReplyToken(), meesageService.getDefaultMessage()));
     }
 
     @EventMapping

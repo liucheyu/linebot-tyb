@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Component
 @Retention(RetentionPolicy.RUNTIME)
-public @interface PostBackHandler {
+public @interface PostBackComponent {
 }

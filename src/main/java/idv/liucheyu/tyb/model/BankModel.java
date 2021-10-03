@@ -5,13 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
-@JsonTypeName("payMethod")
+@JsonTypeName("bankMethod")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PayModel implements PostBackModel{
-    private String method;
-    private Double amount;
+public class BankModel implements PostBackModel{
+    private String bankName;
 
 }
