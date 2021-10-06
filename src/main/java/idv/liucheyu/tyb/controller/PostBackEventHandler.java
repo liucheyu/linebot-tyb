@@ -41,9 +41,6 @@ public class PostBackEventHandler {
     @EventMapping
     public void postBackEvent(PostbackEvent event) throws JsonProcessingException, InvocationTargetException, IllegalAccessException {
         PostBackModel postBackModel = objectMapper.readValue(event.getPostbackContent().getData(), PostBackModel.class);
-        System.out.println(event.getPostbackContent());
-        System.out.println(postBackModel);
-        //檢查postBackAction的data class能不能轉method的class
         lineMessagingClient.replyMessage(new ReplyMessage(event.getReplyToken(), new TextMessage("got it")));
 
         Optional<PostBackHandlerMethod> methodOp = postBackActionSupporter.postBackMethods.stream()
@@ -51,10 +48,11 @@ public class PostBackEventHandler {
                         .test(postBackModel)).findFirst();
 
 
-//        System.out.println(collect.size());
         if (methodOp.isPresent()) {
             PostBackHandlerMethod postBackHandlerMethod = methodOp.get();
             postBackHandlerMethod.getMethod().invoke(postBackHandlerMethod.getObject(), postBackModel);
+        } else {
+            lineMessagingClient.replyMessage(new ReplyMessage(event.getReplyToken(), new TextMessage("不支援的回傳類型")));
         }
 
 

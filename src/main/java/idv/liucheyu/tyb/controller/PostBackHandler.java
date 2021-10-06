@@ -11,6 +11,20 @@ public class PostBackHandler {
     @PostBackMethod
     public void postBackAction(PayModel postBackData){
         System.out.println(postBackData);
+        switch (postBackData.getMethod()) {
+            case "cash":
+
+                break;
+            case "credit":
+
+                break;
+            case "icard":
+
+                break;
+            default:
+
+                break;
+        }
     }
 
     @PostBackMethod

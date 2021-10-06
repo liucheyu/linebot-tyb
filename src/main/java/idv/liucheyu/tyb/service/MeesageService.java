@@ -77,6 +77,26 @@ public class MeesageService {
                 ).build();
     }
 
+    public Message getIcardSelectMessage(List<String> iCardNames) {
+        ObjectNode objectNode = objectMapper.createObjectNode();
+        objectNode = objectNode.put("action", "bankCardSelect");
+        ObjectNode finalObjectNode = objectNode;
+        return TemplateMessage.builder()
+                .altText("請選擇電子票證")
+                .template(ButtonsTemplate.builder()
+                        .title("電子票證")
+                        .text("選擇電子票證")
+                        .actions(iCardNames.stream().map(b -> PostbackAction.builder()
+                                .label(b)
+                                .text(b)
+                                .data(finalObjectNode
+                                        .put("iCardName", b).toString())
+                                .build()).collect(Collectors.toList())
+                        ).build()
+
+                ).build();
+    }
+
     public Message getDefaultMessage() {
         StringBuffer sb = new StringBuffer();
         sb.append("1.記帳請輸入[#金額]（ex:#85").append("\n").append("2.報表請輸入[#報表]").append("\n");
